@@ -1,44 +1,39 @@
-import React, { useState } from 'react'
-import ListContacts from './ListContacts'
+import React, { useState, useEffect } from 'react';
+import ListContacts from './ListContacts';
+import * as ContactsAPI from './utils/ContactsAPI';
+import CreateContact from './CreateContact';
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
-  const [contacts, setContacts] = useState([
-    {
-      id: 'tyler',
-      name: 'Tyler McGinnis',
-      handle: '@tylermcginnis',
-      avatarURL: 'http://localhost:5001/tyler.jpg'
-    },
-    {
-      id: 'karen',
-      name: 'Karen Isgrigg',
-      handle: '@karen_isgrigg',
-      avatarURL: 'http://localhost:5001/karen.jpg'
-    },
-    {
-      id: 'richard',
-      name: 'Richard Kalehoff',
-      handle: '@richardkalehoff',
-      avatarURL: 'http://localhost:5001/richard.jpg'
-    },
-  ])
-  
+  const [contacts, setContacts] = useState([]);
+  const [screen, setScreen] = useState('list');
+  useEffect(() => {
+    ContactsAPI.getAll()
+    .then((contacts) => {
+      setContacts(contacts)
+    })
+  }, []);
+
   const removeContact = (contact) => {
     setContacts(contacts.filter((c) => {
       return c.id !== contact.id
     }))
+    ContactsAPI.remove(contact);
     
   }
   
     return (
-      <div>
-        <ListContacts
-          contacts={contacts}
-          onDeleteContact={removeContact}
+   <Routes>
+      <Route exact path='/'>
+      <ListContacts
+        contacts={contacts}
+        onDeleteContact={removeContact}
+        setScreen={setScreen}
         />
-      </div>
-    )
-  
+      </Route>
+      <Route path='/create' component={CreateContact}/>
+   </Routes>
+  )
 }
 
 export default App

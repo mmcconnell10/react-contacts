@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 
-const ListContacts = ({contacts, onDeleteContact}) => {
+const ListContacts = ({contacts, onDeleteContact, setScreen}) => {
   const [query, setQuery] = useState('');
 
   const showingContacts = query === ''
@@ -9,6 +10,8 @@ const ListContacts = ({contacts, onDeleteContact}) => {
     : contacts.filter((c) => (
       c.name.toLowerCase().includes(query.toLowerCase())
     ))
+
+  
   return(
     <div className='list-contacts'>
       <div className='list-contacts-top'>
@@ -19,6 +22,9 @@ const ListContacts = ({contacts, onDeleteContact}) => {
           value={query}
           onChange={(event) => setQuery(event.target.value.trim())}
         />
+        <Link to='/create' className="add-contact">
+          Add Contact
+        </Link>
       </div>
       {showingContacts.length !== contacts.length && (
         <div className='showing-contacts'>
@@ -45,7 +51,7 @@ const ListContacts = ({contacts, onDeleteContact}) => {
 }
 
 ListContacts.propTypes={
-  contatcs: PropTypes.array.isRequired,
+  contacts: PropTypes.array.isRequired,
   onDeleteContact: PropTypes.func.isRequired
 }
 
